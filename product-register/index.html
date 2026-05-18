@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>상품 등록</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background-color: #e9ecef;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #222;
+    }
+
+    .phone {
+      width: 900px;
+      min-height: 100vh;
+      background-color: #fff;
+      position: relative;
+      overflow: visible;
+    }
+
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #ff5057;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background-color: #ff5057;
+    }
+
+    .header-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .content {
+      padding-bottom: 0;
+    }
+
+    .section {
+      padding: 28px 34px;
+      border-bottom: 7px solid #f3f4f5;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .photo-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 18px;
+      padding-bottom: 6px;
+      min-height: 106px;
+      border-radius: 10px;
+      transition: 0.15s;
+    }
+
+    .photo-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .photo-row.drag-over {
+      background-color: #fff1f2;
+      outline: 2px dashed #ff5057;
+      padding: 8px;
+    }
+
+    .photo-add {
+      width: 96px;
+      height: 96px;
+      border-radius: 8px;
+      background-color: #f0f3f5;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #c5ccd3;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .photo-add:hover {
+      background-color: #eef1f4;
+    }
+
+    .camera {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .photo-item {
+      width: 96px;
+      height: 96px;
+      border-radius: 8px;
+      background-color: #ddd;
+      flex: 0 0 auto;
+      position: relative;
+      overflow: visible;
+    }
+
+    .photo-item.active {
+      border: 2px solid #ff5057;
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .photo-remove {
+      position: absolute;
+      right: -7px;
+      top: -7px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: white;
+      border: 1px solid #d8dde2;
+      color: #9ba1a8;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .photo-remove:hover {
+      color: #ff5057;
+      border-color: #ff5057;
+    }
+
+    .upload-help {
+      margin-top: -8px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #a0a7af;
+      font-weight: 700;
+    }
+
+    .info-list {
+      border-top: 1px solid #e3e7eb;
+    }
+
+    .info-row {
+      display: flex;
+      height: 54px;
+      border-bottom: 1px solid #e3e7eb;
+    }
+
+    .info-label {
+      width: 110px;
+      background-color: #f2f5f7;
+      display: flex;
+      align-items: center;
+      padding-left: 18px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #a6adb5;
+      flex-shrink: 0;
+    }
+
+    .info-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0 14px;
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .info-input::placeholder {
+      color: #b2b8bf;
+      font-weight: 700;
+    }
+
+    .info-select {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0 14px;
+      font-size: 15px;
+      color: #333;
+      font-weight: 600;
+      background-color: white;
+    }
+
+    .price-input-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .price-input {
+      width: 100%;
+      padding-right: 38px;
+    }
+
+    .price-unit {
+      position: absolute;
+      right: 14px;
+      color: #333;
+      font-size: 15px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .method-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .method-box label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .method-box input {
+      accent-color: #ff5057;
+    }
+
+    .description-top {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .textarea-wrap {
+      height: 170px;
+      border: 1px solid #dfe4e8;
+      border-radius: 8px;
+      position: relative;
+      padding: 16px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      resize: none;
+      font-size: 16px;
+      font-family: inherit;
+      font-weight: 700;
+      color: #333;
+    }
+
+    textarea::placeholder {
+      color: #b2b8bf;
+      font-weight: 700;
+    }
+
+    .text-count {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #b5bbc2;
+    }
+
+    .sub-text {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #a0a7af;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .place-type-box {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .place-type-box label {
+      flex: 1;
+      height: 48px;
+      border: 1px solid #dfe4e8;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      background-color: white;
+    }
+
+    .place-type-box input {
+      accent-color: #ff5057;
+    }
+
+    .place-type-box label:has(input:checked) {
+      border-color: #ff5057;
+      background-color: #fff1f2;
+      color: #ff5057;
+    }
+
+    .location-panel {
+      margin-top: 18px;
+    }
+
+    .campus-map-wrap {
+      position: relative;
+      width: 100%;
+      margin-top: 14px;
+      border: 1px solid #dfe4e8;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #f5f5f5;
+    }
+
+    .campus-map {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .map-point {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      transform: translate(-50%, -50%);
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .map-point:hover {
+      outline: 4px solid rgba(255, 80, 87, 0.35);
+      background-color: rgba(255, 80, 87, 0.15);
+    }
+
+    .selected-pin {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background-color: #ff5057;
+      color: white;
+      font-size: 17px;
+      font-weight: 900;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 6;
+      box-shadow: 0 0 0 5px rgba(255, 80, 87, 0.25);
+      pointer-events: none;
+    }
+
+    .selected-location-box {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background-color: #f3f4f5;
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .selected-location-box strong {
+      color: #ff5057;
+    }
+
+    .outside-search-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .outside-search-input {
+      flex: 1;
+      height: 46px;
+      border: 1px solid #dfe4e8;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .outside-search-input::placeholder {
+      color: #b2b8bf;
+    }
+
+    .outside-search-btn {
+      width: 86px;
+      height: 46px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff5057;
+      color: white;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .outside-search-btn:hover {
+      background-color: #f0444b;
+    }
+
+    #naverMap {
+      width: 100%;
+      height: 360px;
+      margin-top: 14px;
+      border: 1px solid #dfe4e8;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: #f5f5f5;
+    }
+
+    .bottom-bar {
+      height: 78px;
+      background-color: white;
+      border-top: 1px solid #e6e9ec;
+      padding: 14px 34px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 50px;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff5057;
+      color: white;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #f0444b;
+    }
+
+    .submit-btn:disabled {
+      background-color: #c8c8c8;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        background-color: white;
+      }
+
+      .phone {
+        width: 100%;
+        min-height: 100vh;
+      }
+
+      .section {
+        padding: 24px 20px;
+      }
+
+      .bottom-bar {
+        padding: 14px 20px;
+      }
+
+      .header-title {
+        font-size: 18px;
+      }
+
+      .info-label {
+        width: 96px;
+        padding-left: 12px;
+        font-size: 14px;
+      }
+
+      .method-box {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="phone">
+    <header class="header">
+      <h1 class="header-title">상품 등록</h1>
+    </header>
+
+    <main class="content">
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">상품 정보</h2>
+        </div>
+
+        <div class="photo-row" id="photoRow">
+          <label class="photo-add" id="photoAdd">
+            <input
+              type="file"
+              id="photoInput"
+              accept="image/*"
+              multiple
+              hidden
+            />
+            <div class="camera">📷</div>
+            <div><span id="photoCount">0</span>/10</div>
+          </label>
+        </div>
+
+        <p class="upload-help">
+          이미지를 클릭해서 선택하거나 이 영역에 드래그해서 추가할 수 있어요.
+        </p>
+
+        <div class="info-list">
+          <div class="info-row">
+            <div class="info-label">상품명</div>
+            <input
+              id="productName"
+              class="info-input"
+              type="text"
+              placeholder="상품명을 입력해 주세요."
+            />
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">카테고리</div>
+            <select id="productCategory" class="info-select">
+              <option value="">카테고리를 선택해 주세요.</option>
+              <option value="전자기기">전자기기</option>
+              <option value="도서">도서</option>
+              <option value="의류">의류</option>
+              <option value="생활용품">생활용품</option>
+              <option value="기타">기타</option>
+            </select>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">판매가</div>
+
+            <div class="price-input-wrap">
+              <input
+                id="productPrice"
+                class="info-input price-input"
+                type="text"
+                inputmode="numeric"
+                placeholder="가격을 입력해 주세요."
+              />
+              <span class="price-unit">원</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <div class="info-label">수령 방식</div>
+            <div class="method-box">
+              <label>
+                <input type="radio" name="tradeMethod" value="직거래" />
+                직거래
+              </label>
+
+              <label>
+                <input type="radio" name="tradeMethod" value="택배" checked />
+                택배
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="description-top">
+          <h2 class="section-title">상품 설명</h2>
+        </div>
+
+        <div class="textarea-wrap">
+          <textarea
+            id="description"
+            maxlength="1000"
+            placeholder="상품 설명을 입력해 주세요."
+          ></textarea>
+          <span class="text-count"><span id="descCount">0</span>/1000</span>
+        </div>
+      </section>
+
+      <section class="section" id="directLocationSection" style="display: none;">
+        <h2 class="section-title">거래 위치</h2>
+        <p class="sub-text">
+          직거래 장소를 교내 또는 교외 중에서 선택해 주세요.
+        </p>
+
+        <div class="place-type-box">
+          <label>
+            <input type="radio" name="tradePlaceType" value="교내" checked />
+            교내
+          </label>
+
+          <label>
+            <input type="radio" name="tradePlaceType" value="교외" />
+            교외
+          </label>
+        </div>
+
+        <div class="location-panel" id="campusLocationPanel">
+          <p class="sub-text">교내에서 거래할 캠퍼스 위치 번호를 선택해 주세요.</p>
+
+          <div class="campus-map-wrap">
+            <img src="sejong-map.png" alt="세종대학교 캠퍼스 지도" class="campus-map" />
+
+            <div id="selectedPin" class="selected-pin">1</div>
+
+            <button class="map-point" data-num="1" data-name="집현관(대학본부)" style="left:22.3%; top:33.3%;"></button>
+            <button class="map-point" data-num="2" data-name="대양홀" style="left:15.5%; top:55.5%;"></button>
+            <button class="map-point" data-num="3" data-name="모짜르트홀" style="left:10.7%; top:48.4%;"></button>
+            <button class="map-point" data-num="4" data-name="군자관" style="left:29.8%; top:43.5%;"></button>
+            <button class="map-point" data-num="5" data-name="광개토관" style="left:33.9%; top:26.2%;"></button>
+            <button class="map-point" data-num="6" data-name="이당관" style="left:44.5%; top:26.5%;"></button>
+            <button class="map-point" data-num="7" data-name="진관홀" style="left:49.9%; top:32.4%;"></button>
+            <button class="map-point" data-num="8" data-name="용덕관" style="left:56.2%; top:33.0%;"></button>
+            <button class="map-point" data-num="9" data-name="흥진구조실험센터" style="left:60.5%; top:28.8%;"></button>
+            <button class="map-point" data-num="10" data-name="세종초등학교" style="left:78.5%; top:24.8%;"></button>
+            <button class="map-point" data-num="11" data-name="미래교육원 별관" style="left:81.0%; top:33.9%;"></button>
+            <button class="map-point" data-num="12" data-name="세종초등학교 강당" style="left:77.4%; top:42.4%;"></button>
+            <button class="map-point" data-num="13" data-name="영실관" style="left:71.2%; top:34.6%;"></button>
+            <button class="map-point" data-num="14" data-name="충무관" style="left:66.7%; top:39.8%;"></button>
+            <button class="map-point" data-num="15" data-name="율곡관" style="left:62.9%; top:39.0%;"></button>
+            <button class="map-point" data-num="16" data-name="다산관" style="left:69.7%; top:50.8%;"></button>
+            <button class="map-point" data-num="17" data-name="주차빌딩" style="left:74.8%; top:53.5%;"></button>
+            <button class="map-point" data-num="18" data-name="동천관(학술정보원)" style="left:60.2%; top:49.3%;"></button>
+            <button class="map-point" data-num="19" data-name="우정당" style="left:62.5%; top:60.6%;"></button>
+            <button class="map-point" data-num="20" data-name="박물관" style="left:57.5%; top:69.6%;"></button>
+            <button class="map-point" data-num="21" data-name="아사달 연못" style="left:54.8%; top:67.0%;"></button>
+            <button class="map-point" data-num="22" data-name="대양 타워" style="left:51.3%; top:45.8%;"></button>
+            <button class="map-point" data-num="23" data-name="애지헌" style="left:44.8%; top:47.1%;"></button>
+            <button class="map-point" data-num="24" data-name="대양 AI 센터" style="left:47.8%; top:69.6%;"></button>
+            <button class="map-point" data-num="25" data-name="운동장" style="left:41.2%; top:73.7%;"></button>
+            <button class="map-point" data-num="26" data-name="세종관" style="left:37.3%; top:62.0%;"></button>
+            <button class="map-point" data-num="27" data-name="학생회관" style="left:32.9%; top:68.2%;"></button>
+            <button class="map-point" data-num="28" data-name="새날관" style="left:84.9%; top:10.3%;"></button>
+            <button class="map-point" data-num="29" data-name="무방관" style="left:88.6%; top:17.1%;"></button>
+          </div>
+
+          <div class="selected-location-box">
+            선택한 교내 위치:
+            <strong id="selectedLocationText">아직 선택하지 않음</strong>
+          </div>
+        </div>
+
+        <div class="location-panel" id="outsideLocationPanel" style="display: none;">
+          <p class="sub-text">
+            주소를 검색하거나 지도에서 원하는 위치를 클릭해 주세요.
+          </p>
+
+          <div class="outside-search-row">
+            <input
+              id="outsideSearchInput"
+              class="outside-search-input"
+              type="text"
+              placeholder="예: 서울 광진구 능동로 209"
+            />
+            <button type="button" id="outsideSearchBtn" class="outside-search-btn">
+              검색
+            </button>
+          </div>
+
+          <div id="naverMap"></div>
+
+          <div class="selected-location-box">
+            선택한 교외 위치:
+            <strong id="outsideLocationText">아직 선택하지 않음</strong>
+          </div>
+        </div>
+
+        <input type="hidden" id="selectedLocationNumber" name="selectedLocationNumber" />
+        <input type="hidden" id="selectedLocationName" name="selectedLocationName" />
+
+        <input type="hidden" id="outsideLat" name="outsideLat" />
+        <input type="hidden" id="outsideLng" name="outsideLng" />
+        <input type="hidden" id="outsideAddress" name="outsideAddress" />
+      </section>
+    </main>
+
+    <div class="bottom-bar">
+      <button class="submit-btn" id="submitBtn">등록하기</button>
+    </div>
+  </div>
+
+  <!-- 
+    중요:
+    여기에_네이버_CLIENT_ID_입력 부분을 네이버 클라우드에서 받은 Client ID / ncpKeyId로 바꾸면 됩니다.
+    Secret Key는 HTML에 넣으면 안 됩니다.
+  -->
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=Gboy7PQSzpuLZgmR30exSIf7ThG9U0kKMfIAOENR&submodules=geocoder"></script>
+
+  <script>
+    /* =========================
+       교내 지도 위치 선택
+    ========================= */
+    const points = document.querySelectorAll(".map-point");
+    const selectedPin = document.getElementById("selectedPin");
+    const selectedLocationText = document.getElementById("selectedLocationText");
+    const selectedLocationNumber = document.getElementById("selectedLocationNumber");
+    const selectedLocationName = document.getElementById("selectedLocationName");
+
+    points.forEach(point => {
+      point.addEventListener("click", () => {
+        const num = point.dataset.num;
+        const name = point.dataset.name;
+
+        selectedPin.style.left = point.style.left;
+        selectedPin.style.top = point.style.top;
+        selectedPin.textContent = num;
+        selectedPin.style.display = "flex";
+
+        selectedLocationText.textContent = `${num}번 ${name}`;
+        selectedLocationNumber.value = num;
+        selectedLocationName.value = name;
+      });
+    });
+
+    function resetCampusLocation() {
+      selectedPin.style.display = "none";
+      selectedLocationText.textContent = "아직 선택하지 않음";
+      selectedLocationNumber.value = "";
+      selectedLocationName.value = "";
+    }
+
+    /* =========================
+       네이버 지도 교외 위치 선택
+    ========================= */
+    const outsideSearchInput = document.getElementById("outsideSearchInput");
+    const outsideSearchBtn = document.getElementById("outsideSearchBtn");
+    const outsideLocationText = document.getElementById("outsideLocationText");
+    const outsideLat = document.getElementById("outsideLat");
+    const outsideLng = document.getElementById("outsideLng");
+    const outsideAddress = document.getElementById("outsideAddress");
+
+    let naverMap = null;
+    let outsideMarker = null;
+
+    function initNaverMap() {
+      if (typeof naver === "undefined" || !naver.maps) {
+        console.error("네이버 지도 API를 불러오지 못했습니다.");
+        return;
+      }
+
+      if (naverMap !== null) {
+        setTimeout(() => {
+          naver.maps.Event.trigger(naverMap, "resize");
+        }, 100);
+        return;
+      }
+
+      const sejongUniv = new naver.maps.LatLng(37.550944, 127.073765);
+
+      naverMap = new naver.maps.Map("naverMap", {
+        center: sejongUniv,
+        zoom: 15
+      });
+
+      outsideMarker = new naver.maps.Marker({
+        position: sejongUniv,
+        map: naverMap,
+        visible: false
+      });
+
+      naver.maps.Event.addListener(naverMap, "click", function (e) {
+        selectOutsideLocation(
+          e.coord.lat(),
+          e.coord.lng(),
+          "지도에서 선택한 위치"
+        );
+      });
+
+      setTimeout(() => {
+        naver.maps.Event.trigger(naverMap, "resize");
+        naverMap.setCenter(sejongUniv);
+      }, 100);
+    }
+
+    function selectOutsideLocation(lat, lng, address) {
+      const position = new naver.maps.LatLng(lat, lng);
+
+      outsideMarker.setPosition(position);
+      outsideMarker.setVisible(true);
+      naverMap.setCenter(position);
+
+      outsideLat.value = lat;
+      outsideLng.value = lng;
+      outsideAddress.value = address;
+      outsideLocationText.textContent = `${address} (${lat.toFixed(6)}, ${lng.toFixed(6)})`;
+    }
+
+    function resetOutsideLocation() {
+      outsideLat.value = "";
+      outsideLng.value = "";
+      outsideAddress.value = "";
+      outsideLocationText.textContent = "아직 선택하지 않음";
+
+      if (outsideMarker) {
+        outsideMarker.setVisible(false);
+      }
+    }
+
+    outsideSearchBtn.addEventListener("click", () => {
+      searchOutsideAddress();
+    });
+
+    outsideSearchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchOutsideAddress();
+      }
+    });
+
+    function searchOutsideAddress() {
+      const query = outsideSearchInput.value.trim();
+
+      if (query === "") {
+        alert("검색할 주소를 입력해 주세요.");
+        return;
+      }
+
+      if (!naverMap) {
+        initNaverMap();
+      }
+
+      if (!naver.maps.Service || !naver.maps.Service.geocode) {
+        alert("Geocoding API를 사용할 수 없습니다. 네이버 클라우드에서 Geocoding을 체크했는지 확인해 주세요.");
+        return;
+      }
+
+      naver.maps.Service.geocode({
+        query: query
+      }, function (status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+          alert("주소 검색에 실패했습니다.");
+          return;
+        }
+
+        const result = response.v2.addresses[0];
+
+        if (!result) {
+          alert("검색 결과가 없습니다. 도로명 주소나 지번 주소로 다시 입력해 주세요.");
+          return;
+        }
+
+        const lat = Number(result.y);
+        const lng = Number(result.x);
+        const address = result.roadAddress || result.jibunAddress || query;
+
+        selectOutsideLocation(lat, lng, address);
+      });
+    }
+
+    /* =========================
+       이미지 업로드 / 드래그앤드롭
+    ========================= */
+    const photoRow = document.getElementById("photoRow");
+    const photoInput = document.getElementById("photoInput");
+    const photoCount = document.getElementById("photoCount");
+
+    let selectedImages = [];
+
+    function updatePhotoCount() {
+      photoCount.textContent = selectedImages.length;
+    }
+
+    function createPhotoPreview(file) {
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 업로드할 수 있어요.");
+        return;
+      }
+
+      if (selectedImages.length >= 10) {
+        alert("이미지는 최대 10장까지 등록할 수 있어요.");
+        return;
+      }
+
+      selectedImages.push(file);
+
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const photoItem = document.createElement("div");
+        photoItem.className = "photo-item";
+
+        if (selectedImages.length === 1) {
+          photoItem.classList.add("active");
+        }
+
+        const img = document.createElement("img");
+        img.src = event.target.result;
+        img.alt = "상품 이미지";
+
+        const removeBtn = document.createElement("span");
+        removeBtn.className = "photo-remove";
+        removeBtn.textContent = "×";
+
+        removeBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+
+          const index = selectedImages.indexOf(file);
+
+          if (index !== -1) {
+            selectedImages.splice(index, 1);
+          }
+
+          photoItem.remove();
+
+          const firstPhoto = photoRow.querySelector(".photo-item");
+          const activePhoto = photoRow.querySelector(".photo-item.active");
+
+          if (!activePhoto && firstPhoto) {
+            firstPhoto.classList.add("active");
+          }
+
+          updatePhotoCount();
+        });
+
+        photoItem.addEventListener("click", () => {
+          document.querySelectorAll(".photo-item").forEach(item => {
+            item.classList.remove("active");
+          });
+
+          photoItem.classList.add("active");
+        });
+
+        photoItem.appendChild(img);
+        photoItem.appendChild(removeBtn);
+        photoRow.appendChild(photoItem);
+
+        updatePhotoCount();
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    photoInput.addEventListener("change", function () {
+      const files = Array.from(photoInput.files);
+
+      files.forEach(file => {
+        createPhotoPreview(file);
+      });
+
+      photoInput.value = "";
+    });
+
+    photoRow.addEventListener("dragover", function (event) {
+      event.preventDefault();
+      photoRow.classList.add("drag-over");
+    });
+
+    photoRow.addEventListener("dragleave", function () {
+      photoRow.classList.remove("drag-over");
+    });
+
+    photoRow.addEventListener("drop", function (event) {
+      event.preventDefault();
+      photoRow.classList.remove("drag-over");
+
+      const files = Array.from(event.dataTransfer.files);
+
+      files.forEach(file => {
+        createPhotoPreview(file);
+      });
+    });
+
+    /* =========================
+       상품 설명 글자 수
+    ========================= */
+    const description = document.getElementById("description");
+    const descCount = document.getElementById("descCount");
+
+    description.addEventListener("input", () => {
+      descCount.textContent = description.value.length;
+    });
+
+    /* =========================
+       판매가 입력 처리
+    ========================= */
+    const productPrice = document.getElementById("productPrice");
+
+    productPrice.addEventListener("input", () => {
+      let onlyNumber = productPrice.value.replace(/[^0-9]/g, "");
+
+      if (onlyNumber === "") {
+        productPrice.value = "";
+        return;
+      }
+
+      productPrice.value = Number(onlyNumber).toLocaleString("ko-KR");
+    });
+
+    /* =========================
+       수령 방식 선택
+    ========================= */
+    const tradeMethodRadios = document.querySelectorAll("input[name='tradeMethod']");
+    const directLocationSection = document.getElementById("directLocationSection");
+
+    tradeMethodRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        const selectedMethod = document.querySelector("input[name='tradeMethod']:checked").value;
+
+        if (selectedMethod === "직거래") {
+          directLocationSection.style.display = "block";
+          showTradePlacePanel();
+        } else {
+          directLocationSection.style.display = "none";
+          resetCampusLocation();
+          resetOutsideLocation();
+        }
+      });
+    });
+
+    /* =========================
+       교내 / 교외 선택
+    ========================= */
+    const tradePlaceTypeRadios = document.querySelectorAll("input[name='tradePlaceType']");
+    const campusLocationPanel = document.getElementById("campusLocationPanel");
+    const outsideLocationPanel = document.getElementById("outsideLocationPanel");
+
+    tradePlaceTypeRadios.forEach(radio => {
+      radio.addEventListener("change", () => {
+        showTradePlacePanel();
+      });
+    });
+
+    function showTradePlacePanel() {
+      const selectedPlaceType = document.querySelector("input[name='tradePlaceType']:checked").value;
+
+      if (selectedPlaceType === "교내") {
+        campusLocationPanel.style.display = "block";
+        outsideLocationPanel.style.display = "none";
+        resetOutsideLocation();
+      } else {
+        campusLocationPanel.style.display = "none";
+        outsideLocationPanel.style.display = "block";
+        resetCampusLocation();
+
+        setTimeout(() => {
+          initNaverMap();
+        }, 100);
+      }
+    }
+
+    /* =========================
+       등록 버튼 / 백엔드 연결 위치
+    ========================= */
+    const submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.addEventListener("click", async () => {
+      const productNameValue = document.getElementById("productName").value;
+      const productCategoryValue = document.getElementById("productCategory").value;
+
+      const productPriceText = document.getElementById("productPrice").value;
+      const productPriceValue = productPriceText.replace(/[^0-9]/g, "");
+
+      const descriptionValue = document.getElementById("description").value;
+      const tradeMethodValue = document.querySelector("input[name='tradeMethod']:checked").value;
+
+      const tradePlaceTypeValue =
+        tradeMethodValue === "직거래"
+          ? document.querySelector("input[name='tradePlaceType']:checked").value
+          : "";
+
+      const selectedLocationNum = document.getElementById("selectedLocationNumber").value;
+      const selectedLocationNameValue = document.getElementById("selectedLocationName").value;
+
+      const outsideLatValue = outsideLat.value;
+      const outsideLngValue = outsideLng.value;
+      const outsideAddressValue = outsideAddress.value;
+
+      if (productNameValue.trim() === "") {
+        alert("상품명을 입력해 주세요.");
+        return;
+      }
+
+      if (productCategoryValue.trim() === "") {
+        alert("카테고리를 선택해 주세요.");
+        return;
+      }
+
+      if (productPriceValue.trim() === "") {
+        alert("가격을 입력해 주세요.");
+        return;
+      }
+
+      if (descriptionValue.trim() === "") {
+        alert("상품 설명을 입력해 주세요.");
+        return;
+      }
+
+      if (tradeMethodValue === "직거래") {
+        if (tradePlaceTypeValue === "교내" && selectedLocationNum === "") {
+          alert("교내 직거래 위치를 선택해 주세요.");
+          return;
+        }
+
+        if (tradePlaceTypeValue === "교외" && (outsideLatValue === "" || outsideLngValue === "")) {
+          alert("교외 직거래 위치를 검색하거나 지도에서 선택해 주세요.");
+          return;
+        }
+      }
+
+      const formData = new FormData();
+
+      formData.append("productName", productNameValue);
+      formData.append("category", productCategoryValue);
+      formData.append("price", productPriceValue);
+      formData.append("description", descriptionValue);
+      formData.append("tradeMethod", tradeMethodValue);
+
+      if (tradeMethodValue === "직거래") {
+        formData.append("tradePlaceType", tradePlaceTypeValue);
+
+        if (tradePlaceTypeValue === "교내") {
+          formData.append("locationNumber", selectedLocationNum);
+          formData.append("locationName", selectedLocationNameValue);
+        }
+
+        if (tradePlaceTypeValue === "교외") {
+          formData.append("outsideLat", outsideLatValue);
+          formData.append("outsideLng", outsideLngValue);
+          formData.append("outsideAddress", outsideAddressValue);
+        }
+      }
+
+      selectedImages.forEach((imageFile) => {
+        formData.append("images", imageFile);
+      });
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "등록 중...";
+
+        /*
+          실제 백엔드가 아직 없으면 이 fetch 부분은 오류가 나는 게 정상입니다.
+          프론트 화면만 확인하려면 아래 fetch 부분을 잠시 주석 처리하고 alert만 사용하면 됩니다.
+        */
+
+        const response = await fetch("/api/products", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("상품 등록 실패");
+        }
+
+        const result = await response.json();
+
+        console.log("백엔드 응답:", result);
+
+        alert("상품이 등록되었습니다.");
+
+      } catch (error) {
+        console.error(error);
+        alert("상품 등록 중 오류가 발생했습니다.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "등록하기";
+      }
+    });
+  </script>
+</body>
+</html>
